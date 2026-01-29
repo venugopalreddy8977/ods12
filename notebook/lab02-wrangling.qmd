@@ -1,0 +1,101 @@
+---
+title: "Week 2 – Wrangling & Descriptive Stats"
+author: "Venu Gopal"
+format: html
+editor: visual
+---
+
+```{r}
+# Load dataset from data folder
+data <- read.csv("../data/student_registrations.csv")
+
+
+
+# Preview first 10 rows
+head(data, 10)
+
+
+
+```
+
+```{r}
+# Inspect dataset structure
+
+str(data)
+
+# Dimensions
+nrow(data)   # number of rows
+ncol(data)   # number of columns
+
+# Column names
+names(data)
+
+```
+
+\
+
+```{r}
+## Basic descriptive statistics
+# Quick numeric summaries
+summary(data)
+
+# Specific checks
+mean(data$grade, na.rm = TRUE)
+median(data$study_hours, na.rm = TRUE)
+
+# Frequency tables for categorical variables
+table(data$gender)
+table(data$course)
+
+```
+
+```{r}
+## Pre-processing checks
+# Count missing values in each column
+colSums(is.na(data))
+
+```
+
+```{r}
+# Grades should be between 0 and 100
+data[data$grade < 0 | data$grade > 100, ]
+
+# Attendance rate should be 0–100
+data[data$attendance_rate < 0 | data$attendance_rate > 100, ]
+
+# Study hours should be reasonable (0–80)
+data[data$study_hours < 0 | data$study_hours > 80, ]
+
+```
+
+```{r}
+unique(data$gender)
+unique(data$course)
+
+```
+
+```{r}
+invalid_dates <- data[
+  !grepl("^\\d{4}-\\d{2}-\\d{2}$", data$enrol_date),
+  "enrol_date"
+]
+
+unique(invalid_dates)
+
+```
+
+```{r}
+hist(data$grade, main="Distribution of Grades", xlab="Grade")
+hist(data$study_hours, main="Distribution of Study Hours", xlab="Hours")
+
+```
+
+## 
+
+## Data Notes (Week 2)
+
+-   **Missing values:** Age, attendance_rate, assignments_submitted, and satisfaction_level contain missing values.
+-   **Anomalies:** Age includes impossible values (e.g. -5, 200). Grades include values below 0 and above 100.
+-   **Messy categories:** Gender labels are inconsistent (e.g. Male, M, female, ?).
+-   **Dates:** enrol_date includes malformed or empty entries.
+-   **Challenge/question:** Should we remove extreme values or cap them?
